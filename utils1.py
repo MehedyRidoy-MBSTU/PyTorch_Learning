@@ -82,19 +82,23 @@ def evaluate_model(model, test_set):
     return average_loss, accuracy
 
 
-def include_digits(dataset, included_digits):
-    including_indices = [
-        idx for idx in range(len(dataset)) if dataset[idx][1] in included_digits
+def exclude_classes(dataset, excluded_classes):
+    # Convert class names to indices
+    excluded_indices = [dataset.class_to_idx[c] for c in excluded_classes]
+    
+    indices = [
+        idx for idx in range(len(dataset)) if dataset[idx][1] not in excluded_indices
     ]
-    return torch.utils.data.Subset(dataset, including_indices)
+    return torch.utils.data.Subset(dataset, indices)
 
 
-def exclude_digits(dataset, excluded_digits):
-    including_indices = [
-        idx for idx in range(len(dataset)) if dataset[idx][1] not in excluded_digits
+def include_classes(dataset, included_classes):
+    included_indices = [dataset.class_to_idx[c] for c in included_classes]
+    
+    indices = [
+        idx for idx in range(len(dataset)) if dataset[idx][1] in included_indices
     ]
-    return torch.utils.data.Subset(dataset, including_indices)
-
+    return torch.utils.data.Subset(dataset, indices)
 
 def plot_distribution(dataset, title):
     labels = [data[1] for data in dataset]
